@@ -1,6 +1,3 @@
-#pragma warning(disable : 4996) 
-/* ¿À·ù¹øÈ£ 4996ÀÇ ¿À·ù¸¦ ¹«½ÃÇÏ°í ÇÁ·Î±×·¥ ½ÇÇà */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -11,16 +8,36 @@
 #define ENTER1 10
 #define ENTER2 13
 #define BACKSPACE 8
-#define CTRL_BACKSPACE 127 // Å°µéÀÇ °ªÀ» ÀüÃ³¸® ½ÃÅ´ 
-#define WORD_MAX 100 // »ç¿ë °¡´ÉÇÑ ´Ü¾îµéÀÇ ÃÖ´ë °ª
+#define CTRL_BACKSPACE 127 // í‚¤ë“¤ì˜ ê°’ì„ ì „ì²˜ë¦¬ ì‹œí‚´ 
+#define WORD_MAX 500 // ì‚¬ìš© ê°€ëŠ¥í•œ ë‹¨ì–´ë“¤ì˜ ìµœëŒ€ ê°’
 
-// ¿µ¾î¸¸ Ãß°¡ °¡´É 
+// ì˜ì–´ë§Œ ì¶”ê°€ ê°€ëŠ¥ 
 char word[WORD_MAX][25] = { "apple", "left", "right", "hello", "world", "door", "also", "always", "and", "or",
 							"angry", "animal", "bad", "because", "metaphor", "use", "best", "better", "big", "bird",
 							"chance", "word", "number", "result", "score", "time", "student", "class", "floor", "common",
 							"could", "cow", "custom", "difficult", "different", "easy", "empty", "enough", "every", "example",
 							"joke", "king", "life", "light", "little", "low", "long", "luck", "much", "new", 
-							"newspaper", "note", "odor", "oil", "only", "orange", "pencil", "person", "you", "black", NULL};
+							"newspaper", "note", "odor", "oil", "only", "orange", "pencil", "person", "you", "black", 
+                            "red", "yellow", "phone", "paper", "book", "screen", "key", "city", "backpack", "music",
+                            "rice", "dish", "tree", "forest", "weather", "coke", "noddle", "dukyoung", "school", "glasses",
+                            "pain", "bottle", "head", "shirt", "succes", "effort", "banana", "bell", "tape", "hand",
+                            "finger", "face", "keybord", "shoes", "car", "bike", "kick", "gray", "white", "blue", 
+                            "green", "button", "chair", "table", "fish", "sea", "send", "coconat", "desk", "camera",
+                            "work", "knee", "war", "snow", "eyes", "foot", "heart", "mother", "father", "brother",
+                            "sisther", "baby", "shark", "hero", "sofa", "filed", "hair", "stairs", "ear", "seed", "sprout",
+                            "block", "window", "basket", "pig", "dragon", "roll", "duck", "dog", "puppy", "cat", 
+                            "water", "elephant", "flower", "gift", "switch", "box", "apartment", "carrot", "grape", "wheel",
+                            "paint", "handle", "television", "queen", "research", "wife", "wonder", "woman", "welcome", "effect",
+                            "day", "minute", "hour", "second", "mouse", "knife", "mask", "bear", "butterfly", "beautiful",
+                            "korea", "japan", "usa", "russia", "chaina", "plus", "minus", "multiply", "division", "shape",
+                            "palce", "position", "pollution", "earth", "sun", "son", "smoke", "coffee", "warm", "cold",
+                            "headset", "glue", "post", "memo", "monkey", "snake", "chicken", "sheep", "tiger", "lion",
+                            "bedding", "make", "think", "track", "star", "space", "ship", "boat", "eraser", "language",
+                            "grand", "soccer", "baseball", "fire", "down", "up", "leaf", "rabbit", "human", "great",
+                            "nice", "perfect", "line", "lie", "ticket", "sound", "cloud", "bulb", "old", "rnak",
+                            "fly", "air", "airplane", "movie", "helicopter", "message", "art", "bot", "girl", "man",
+                            "lift", "umbrella", "broom", "drink", "hospital", "watch", "leg", "game", "song", "behind",
+                            NULL};
 int r_rand = -1;
 
 typedef struct _Word
@@ -31,6 +48,7 @@ typedef struct _Word
 	int lenght = 0;
 	bool IsErased = true;
 }Words;
+
 typedef struct _Player
 {
 	int Hp = 10;
@@ -38,18 +56,21 @@ typedef struct _Player
 	int Level = 1;
 	char input;
 }Player;
-void Goto(int x, int y) // ÀÔ·Â À§Ä¡¸¦ º¯°æÇÏ´Â ÇÔ¼ö 
+
+void Goto(int x, int y) // ì…ë ¥ ìœ„ì¹˜ë¥¼ ë³€ê²½í•˜ëŠ” í•¨ìˆ˜ 
 {
 	COORD Pos;
 	Pos.X = 2 * x;
 	Pos.Y = y;
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Pos);
 }
+
 void SetConsoleView()
 {
-	system("mode con:cols=100 lines=25"); // cm(¸í·É ÇÁ·ÒÇÁÆ®) Å©±â ¼³Á¤  
-	system("title typing practice"); // cmd ÀÌ¸§ ¼³Á¤ 
+	system("mode con:cols=100 lines=25"); // cm(ëª…ë ¹ í”„ë¡¬í”„íŠ¸) í¬ê¸° ì„¤ì •  
+	system("title typing practice"); // cmd ì´ë¦„ ì„¤ì • 
 }
+
 void DrawUI(Player* player)
 {
 	Goto(20, 0);
@@ -58,17 +79,19 @@ void DrawUI(Player* player)
 	printf("Hp : %2d, Score : %12d", player->Hp, player->Score);
 	Goto(0, 0);
 }
+
 void DrawInput(const char* note)
 {
 	Goto(20, 23);
 	printf("%s", note);
 }
-void DrawWord(Words words[], Player* player, int* count) // ¶³¾îÁö´Â ´Ü¾î¸¦ Ãâ·ÂÇØ ÁÖ´Â ÇÔ¼ö 
+
+void DrawWord(Words words[], Player* player, int* count) // ë–¨ì–´ì§€ëŠ” ë‹¨ì–´ë¥¼ ì¶œë ¥í•´ ì£¼ëŠ” í•¨ìˆ˜ 
 {
 	int i = 0, j = 0;
 	for (i = 0; i < *count; i++)
 	{
-		if (words[i].y >= 25 && words[i].IsErased == false) // ´Ü¾î°¡ È­¸é¿¡ ¾Èº¸ÀÏ °æ¿ì 
+		if (words[i].y >= 25 && words[i].IsErased == false) // ë‹¨ì–´ê°€ í™”ë©´ì— ì•ˆë³´ì¼ ê²½ìš° 
 		{
 			player->Hp -= 1;
 			for (j = i; j < *count - 1; j++)
@@ -87,15 +110,17 @@ void DrawWord(Words words[], Player* player, int* count) // ¶³¾îÁö´Â ´Ü¾î¸¦ Ãâ·Â
 		}
 	}
 }
+
 void GameOverMessage(const Player player)
 {
 	printf("Level : %d\n", player.Level);
 	printf("Score : %d\n", player.Score);
 
 }
+
 void AddWord(Words words[], int* count)
 {
-	if (r_rand == rand() % words[0].lenght) // ¿¬¼ÓÀûÀ¸·Î ¶È°°Àº ´Ü¾î°¡ ³ª¿À´Â °ÍÀ» ¹æÁö 
+	if (r_rand == rand() % words[0].lenght) // ì—°ì†ì ìœ¼ë¡œ ë˜‘ê°™ì€ ë‹¨ì–´ê°€ ë‚˜ì˜¤ëŠ” ê²ƒì„ ë°©ì§€ 
 	{
 		r_rand--;
 		if (words[0].lenght == 1)
@@ -114,6 +139,7 @@ void AddWord(Words words[], int* count)
 		words[(*count)++].IsErased = false;
 	}
 }
+
 void AddWordsX(Words words[])
 {
 	int i;
@@ -125,6 +151,7 @@ void AddWordsX(Words words[])
 		}
 	}
 }
+
 int FindWord(Words words[], char* note, int* count)
 {
 	int i, score = 0;
@@ -133,9 +160,9 @@ int FindWord(Words words[], char* note, int* count)
 		if (words[i].IsErased == false)
 		{
 			int j = 0, ret = 0, count1 = 0, count2 = 0;
-			while (word[words[i].number][j] != NULL) { count1++; j++; } j = 0; // ´Ü¾îÀå¿¡ ÀÖ´Â ´Ü¾î ±æÀÌ Ä«¿îÆ® 
-			while (note[j] != NULL) { count2++; j++; } // ³»°¡ ¾´ ´Ü¾î ±æÀÌ Ä«¿îÆ® 
-			int max = count1 > count2 ? count1 : count2; // ¾î¶² ´Ü¾î°¡ ´õ Å«Áö ÆÇ´Ü 
+			while (word[words[i].number][j] != NULL) { count1++; j++; } j = 0; // ë‹¨ì–´ì¥ì— ìˆëŠ” ë‹¨ì–´ ê¸¸ì´ ì¹´ìš´íŠ¸ 
+			while (note[j] != NULL) { count2++; j++; } // ë‚´ê°€ ì“´ ë‹¨ì–´ ê¸¸ì´ ì¹´ìš´íŠ¸ 
+			int max = count1 > count2 ? count1 : count2; // ì–´ë–¤ ë‹¨ì–´ê°€ ë” í°ì§€ íŒë‹¨ 
 			for (j = 0; j < max; j++)
 			{
 				if (word[words[i].number][j] != note[j])
@@ -147,6 +174,7 @@ int FindWord(Words words[], char* note, int* count)
 			if (ret == 0)
 			{
 				score = 10;
+				Beep(600, 100);
 				if (*count > 1)
 				{
 					for (j = i; j < *count - 1; j++)
@@ -166,8 +194,12 @@ int FindWord(Words words[], char* note, int* count)
 	}
 	return score;
 }
+
 int NoteSet(Player* player, Words words[], char* note, char c, int note_index, int* word_count)
 {
+	if (c == 0)
+		return note_index;
+		
 	if (c == ENTER1 || c == ENTER2)
 	{
 		player->Score += player->Level * FindWord(words, note, word_count);
@@ -203,15 +235,15 @@ int main(void)
 	int speed = 30, count = 0, percentage = 2;
 	int game_time = 0, note_index = 0, next_level = 100;
 
-	srand(time(NULL)); // rand °ª º¯°æ (°è¼Ó ¶È°°Àº ·çÆ¾ÀÌ ¹İº¹ µÇ´Â °ÍÀ» ¹æÁö) 
-	for (int i = 0; word[i][0] != NULL; i++) // ¶³¾îÁú ´Ü¾îÀÇ ±æÀÌ¸¦ È®ÀÎ 
+	srand(time(NULL)); // rand ê°’ ë³€ê²½ (ê³„ì† ë˜‘ê°™ì€ ë£¨í‹´ì´ ë°˜ë³µ ë˜ëŠ” ê²ƒì„ ë°©ì§€) 
+	for (int i = 0; word[i][0] != NULL; i++) // ë–¨ì–´ì§ˆ ë‹¨ì–´ì˜ ê¸¸ì´ë¥¼ í™•ì¸ 
 	{
 		words[0].lenght += 1;
 	}
 
-	SetConsoleView(); // cmd Å©±â¿Í ÀÌ¸§À» ¹Ù²Ù´Â ÇÔ¼ö ½ÇÇà 
+	SetConsoleView(); // cmd í¬ê¸°ì™€ ì´ë¦„ì„ ë°”ê¾¸ëŠ” í•¨ìˆ˜ ì‹¤í–‰ 
 
-	while (player.Hp > 0 && words[0].lenght > 0) // ÇÃ·¹ÀÌ¾îÀÇ Ã¼·ÂÀÌ 0º¸´Ù Å©¸é¼­ ¶³¾îÁú ´Ü¾î°¡ ÀÖÀ» ¶§ ¹İº¹
+	while (player.Hp > 0 && words[0].lenght > 0) // í”Œë ˆì´ì–´ì˜ ì²´ë ¥ì´ 0ë³´ë‹¤ í¬ë©´ì„œ ë–¨ì–´ì§ˆ ë‹¨ì–´ê°€ ìˆì„ ë•Œ ë°˜ë³µ
 	{
 		game_time++;
 
@@ -223,12 +255,12 @@ int main(void)
 			note_index = NoteSet(&player, words, note, c, note_index, &count);
 		}
 
-		if (speed <= game_time) // ´Ü¾î°¡ ¶³¾îÁú ½Ã°£
+		if (speed <= game_time) // ë‹¨ì–´ê°€ ë–¨ì–´ì§ˆ ì‹œê°„
 		{
 			game_time = 0;
 			player.Score += 1;
 			AddWordsX(words);
-			if (rand() % percentage == 0) // ´Ü¾î°¡ »õ·Î »ı±æÁö ÆÇ´Ü 
+			if (rand() % percentage == 0) // ë‹¨ì–´ê°€ ìƒˆë¡œ ìƒê¸¸ì§€ íŒë‹¨ 
 				AddWord(words, &count);
 		}
 
@@ -246,16 +278,16 @@ int main(void)
 		DrawUI(&player); // HP, Score, Level
 		DrawWord(words, &player, &count); // words
 		DrawInput(note); // note
-		Sleep(20); // 20ÃÊ¸¦ ±â´Ù¸² 
-		system("cls"); // cmd Å¬¸®¾î 
+		Sleep(20); // 20ì´ˆë¥¼ ê¸°ë‹¤ë¦¼ 
+		system("cls"); // cmd í´ë¦¬ì–´ 
 	}
 
 	// game over
-	if (words[0].lenght == 0) // ´Ü¾î°¡ ¾øÀ» ¶§ 
+	if (words[0].lenght == 0) // ë‹¨ì–´ê°€ ì—†ì„ ë•Œ 
 	{
-		printf("´Ü¾î¸¦ Ãß°¡ÇØ ÁÖ¼¼¿ä!\n");
+		printf("ë‹¨ì–´ë¥¼ ì¶”ê°€í•´ ì£¼ì„¸ìš”!\n");
 	}
-	else // ´Ü¾î°¡ ÀÖ´Âµ¥ °ÔÀÓ¿¡¼­ Å»¶ô µÇ¾úÀ» ¶§ 
+	else // ë‹¨ì–´ê°€ ìˆëŠ”ë° ê²Œì„ì—ì„œ íƒˆë½ ë˜ì—ˆì„ ë•Œ 
 	{
 		GameOverMessage(player);
 	}
