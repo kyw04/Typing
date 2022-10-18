@@ -1,3 +1,5 @@
+#pragma warning(disable: 4996)
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -13,10 +15,10 @@
 
 // 영어만 추가 가능 
 char word[WORD_MAX][25] = { "apple", "left", "right", "hello", "world", "door", "also", "always", "and", "or",
-		   	    "angry", "animal", "bad", "because", "metaphor", "use", "best", "better", "big", "bird",
-   			    "chance", "word", "number", "result", "score", "time", "student", "class", "floor", "common",
+			    "angry", "animal", "bad", "because", "metaphor", "use", "best", "better", "big", "bird",
+			    "chance", "word", "number", "result", "score", "time", "student", "class", "floor", "common",
 			    "could", "cow", "custom", "difficult", "different", "easy", "empty", "enough", "every", "example",
-   			    "joke", "king", "life", "light", "little", "low", "long", "luck", "much", "new", 
+  			    "joke", "king", "life", "light", "little", "low", "long", "luck", "much", "new", 
 			    "newspaper", "note", "odor", "oil", "only", "orange", "pencil", "person", "you", "black", 
                             "red", "yellow", "phone", "paper", "book", "screen", "key", "city", "backpack", "music",
                             "rice", "dish", "tree", "forest", "weather", "coke", "noddle", "dukyoung", "school", "glasses",
@@ -36,7 +38,8 @@ char word[WORD_MAX][25] = { "apple", "left", "right", "hello", "world", "door", 
                             "grand", "soccer", "baseball", "fire", "down", "up", "leaf", "rabbit", "human", "great",
                             "nice", "perfect", "line", "lie", "ticket", "sound", "cloud", "bulb", "old", "rnak",
                             "fly", "air", "airplane", "movie", "helicopter", "message", "art", "bot", "girl", "man",
-                            "lift", "umbrella", "broom", "drink", "hospital", "watch", "leg", "game", "song", "behind", NULL};
+                            "lift", "umbrella", "broom", "drink", "hospital", "watch", "leg", "game", "song", "behind",
+                            NULL};
 int r_rand = -1;
 
 typedef struct _Word
@@ -196,7 +199,7 @@ int FindWord(Words words[], char* note, int* count)
 
 int NoteSet(Player* player, Words words[], char* note, char c, int note_index, int* word_count)
 {
-	if (c == 0)
+	if (c == 0 || c == ' ')
 		return note_index;
 		
 	if (c == ENTER1 || c == ENTER2)
@@ -207,7 +210,7 @@ int NoteSet(Player* player, Words words[], char* note, char c, int note_index, i
 	}
 	else if (c == BACKSPACE)
 	{
-		note[note_index--] = NULL;
+		note[--note_index] = NULL;
 	}
 	else if (c == CTRL_BACKSPACE)
 	{
